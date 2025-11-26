@@ -1,29 +1,17 @@
-import Express = require("express");
+import pkg from "express";
+import mongoose from "mongoose";
+import { config } from "dotenv";
 
-const app = Express();
+config();
+const app = pkg();
 const port = 3000;
+mongoose.connect(process.env.DATABASE_URL || "", {
+  family: 4,
+});
 
-const { MongoClient } = require("mongodb");
-const uri = "mongodb://localhost:27017"; // Replace with your connection string
-const client = new MongoClient(uri);
-
-async function createDatabaseAndCollection() {
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB");
-
-    const db = client.db("url-shortener"); // Specify your database name
-    const collection = db.collection("myNewCollection");
-
-    // Insert a document to implicitly create the database and collection
-    await collection.insertOne({ name: "Example Document" });
-    console.log("Database and collection created, document inserted.");
-  } finally {
-    await client.close();
-  }
-}
-
-createDatabaseAndCollection();
+const db = mongoose.connection;
+db.on("error", (error) => console.error(error));
+db.once("open", () => console.log("Connected to Database"));
 
 app.get("/", (req, res) => {
   res.send("Hello Everyone!");
