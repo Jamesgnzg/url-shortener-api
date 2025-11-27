@@ -1,0 +1,25 @@
+/* {
+  "_id": "...",
+  "shortCode": "abc123",
+  "originalUrl": "...",
+  "createdAt": "...",
+  "clickStats": {
+    "total": 304,
+    "last24h": 12,
+    "byDate": {
+      "2025-02-01": 30,
+      "2025-02-02": 22
+    }
+  }
+} */
+
+import mongoose from "mongoose";
+
+const shortUrlSchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  shortCode: { type: String, required: true },
+  originalUrl: { type: String, required: true },
+  createdAt: { type: Date, required: true },
+});
+
+export default mongoose.model("ShortUrl", shortUrlSchema);
