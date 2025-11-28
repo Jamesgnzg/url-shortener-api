@@ -16,9 +16,9 @@
 import mongoose from "mongoose";
 
 const shortUrlSchema = new mongoose.Schema({
-  id: { type: String, required: true },
   shortCode: { type: String, required: true },
   originalUrl: { type: String, required: true },
+  createdBy: { type: Number, required: true },
   createdAt: { type: Date, required: true },
 });
 
