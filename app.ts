@@ -1,6 +1,7 @@
 import pkg from "express";
 import mongoose from "mongoose";
 import { config } from "dotenv";
+import shortenRouter from "./src/api/shorten/shortenRouter";
 
 config();
 const app = pkg();
@@ -12,6 +13,9 @@ mongoose.connect(process.env.DATABASE_URL || "", {
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
+
+app.use(pkg.json());
+app.use("/shorten", shortenRouter);
 
 app.get("/", (req, res) => {
   console.log("HEY");
