@@ -17,9 +17,9 @@ import mongoose from "mongoose";
 
 const shortUrlSchema = new mongoose.Schema({
   shortCode: { type: String, required: true },
-  originalUrl: { type: String, required: true },
+  initialUrl: { type: String, required: true },
   createdBy: { type: Number, required: true },
   createdAt: { type: Date, required: true },
 });
 
-export default mongoose.model("ShortUrl", shortUrlSchema);
+export default mongoose.model("short_url", shortUrlSchema);

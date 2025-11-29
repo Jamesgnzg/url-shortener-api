@@ -1,30 +1,28 @@
 import slug from "slug";
 import shortenModel from "./shortenModel";
+import { Request } from "express";
 
-const addNewUrl = async (
-  request: { body: { originalUrl: string; createdBy: number } },
-  response: any
-) => {
-  const { originalUrl, createdBy } = request.body;
-  const sluggedUrl: string = slug(originalUrl);
+const addNewUrl = async (req: Request, res: any) => {
+  const { initialUrl, createdBy } = req.body;
+  const sluggedUrl: string = slug(initialUrl);
   const duplicate = await shortenModel
     .findOne({ shortCode: sluggedUrl })
     .exec();
 
-  if (duplicate) return response.sendStatus(409); // Conflict
+  if (duplicate) return res.sendStatus(409); // Conflict
 
   try {
     const result = await shortenModel.create({
       shortCode: sluggedUrl,
-      originalUrl,
-      createdBy,
+      initialUrl: initialUrl,
+      createdBy: createdBy,
       createdAt: new Date(),
     });
 
     console.log(result);
-    response.status(201).json({ success: `New ${sluggedUrl} created!` });
+    res.status(201).json({ success: `New ${sluggedUrl} created!` });
   } catch (error) {
-    response.status(500).json({ message: error });
+    res.status(500).json({ message: error });
   }
 };
 
