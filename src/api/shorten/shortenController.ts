@@ -1,8 +1,9 @@
 import slug from "slug";
 import shortenModel from "./shortenModel";
-import { Request } from "express";
+import { Response } from "express";
+import { UrlRequest } from "./shortenInterfaces";
 
-const addNewUrl = async (req: Request, res: any) => {
+const addNewUrl = async (req: UrlRequest, res: Response) => {
   const { initialUrl, createdBy } = req.body;
   const sluggedUrl: string = slug(initialUrl);
   const duplicate = await shortenModel
@@ -26,4 +27,14 @@ const addNewUrl = async (req: Request, res: any) => {
   }
 };
 
-export default { addNewUrl };
+const getUrl = async (request: UrlRequest, response: Response) => {
+  const { shortCode } = request.params;
+  try {
+    const result = await shortenModel.findOne({ shortCode });
+    response.status(200).json({ result });
+  } catch (error) {
+    response.status(500).json({ message: error });
+  }
+};
+
+export default { addNewUrl, getUrl };
