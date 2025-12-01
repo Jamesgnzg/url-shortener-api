@@ -2,6 +2,7 @@ import pkg from "express";
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import shortenRouter from "./src/api/shorten/shortenRouter";
+import analyticsRouter from "./src/api/analytics/analyticsRouter";
 
 config();
 const app = pkg();
@@ -17,6 +18,7 @@ db.once("open", () => console.log("Connected to Database"));
 app.use(pkg.json());
 app.use(pkg.urlencoded({ extended: true }));
 app.use("/shorten", shortenRouter);
+app.use("/analytics", analyticsRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
