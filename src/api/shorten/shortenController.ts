@@ -1,27 +1,33 @@
-import slug from "slug";
 import shortenModel from "./shortenModel";
 import { Response } from "express";
 import { UrlRequest } from "./shortenInterfaces";
 
 const addNewUrl = async (req: UrlRequest, res: Response) => {
   const { initialUrl, createdBy } = req.body;
-  const sluggedUrl: string = slug(initialUrl);
-  const duplicate = await shortenModel
-    .findOne({ shortCode: sluggedUrl })
+  let randomShortCode = Math.random().toString(36).slice(2);
+  let duplicate = await shortenModel
+    .findOne({ shortCode: randomShortCode })
     .exec();
 
-  if (duplicate) return res.sendStatus(409); // Conflict
+  while (duplicate) {
+    if (duplicate) {
+      randomShortCode = Math.random().toString(36).slice(2);
+      duplicate = await shortenModel
+        .findOne({ shortCode: randomShortCode })
+        .exec();
+    }
+  }
 
   try {
     const result = await shortenModel.create({
-      shortCode: sluggedUrl,
+      shortCode: randomShortCode,
       initialUrl: initialUrl,
       createdBy: createdBy,
       createdAt: new Date(),
     });
 
     console.log(result);
-    res.status(201).json({ success: `New ${sluggedUrl} created!` });
+    res.status(201).json({ success: `New ${randomShortCode} created!` });
   } catch (error) {
     res.status(500).json({ message: error });
   }
